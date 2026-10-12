@@ -1,0 +1,4 @@
+tmp/
+lex.yy.c
+a.out
+tokens
