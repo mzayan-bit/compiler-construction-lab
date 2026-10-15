@@ -5,8 +5,8 @@
 #include <stdlib.h>
 
 int line = 1;
-char names[1000][256] = {{0}};
-int count = 0;
+char name[200][100];
+int n = 0;
 %}
 %%
 "//"[^\n]* {}
@@ -22,20 +22,21 @@ int count = 0;
 "auto"|"break"|"case"|"char"|"const"|"continue"|"default"|"do"|"double"|"else"|"enum"|"extern"|"float"|"for"|"goto"|"if"|"int"|"long"|"register"|"return"|"short"|"signed"|"sizeof"|"static"|"struct"|"switch"|"typedef"|"union"|"unsigned"|"void"|"volatile"|"while"|"abstract"|"assert"|"boolean"|"byte"|"catch"|"class"|"extends"|"final"|"finally"|"implements"|"import"|"instanceof"|"interface"|"native"|"new"|"package"|"private"|"protected"|"public"|"strictfp"|"super"|"synchronized"|"this"|"throw"|"throws"|"transient"|"try"|"true"|"false"|"null" {}
 [a-zA-Z_][a-zA-Z0-9_]* {
     int i;
-    int found = 0;
-    for (i = 0; i < count; i++) {
-        if (strcmp(names[i], yytext) == 0) {
-            found = 1;
+    int old = 0;
+    for (i = 0; i < n; i++) {
+        if (strcmp(name[i], yytext) == 0) {
+            old = 1;
             break;
         }
     }
-    if (!found) {
-        if (count == 1000 || yyleng >= 256) {
-            fprintf(stderr, "Name storage limit exceeded.\n");
+    if (!old) {
+        if (n == 200 || yyleng >= 100) {
+            printf("too many names\n");
             exit(1);
         }
-        strcpy(names[count], yytext);
-        count++;
+        /* save new name */
+        strcpy(name[n], yytext);
+        n++;
         printf("%s : line %d\n", yytext, line);
     }
 }

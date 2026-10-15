@@ -2,15 +2,15 @@
 %{
 #include <stdio.h>
 
-int chars = 0;
-int words = 0;
-int lines = 0;
-int last_newline = 1;
+int ch = 0;
+int word = 0;
+int line = 0;
+int last = 1;
 %}
 %%
-[^ \t\r\n\f\v]+ { words++; chars += yyleng; last_newline = 0; }
-\n { lines++; chars++; last_newline = 1; }
-[ \t\r\f\v]+ { chars += yyleng; last_newline = 0; }
+[^ \t\r\n\f\v]+ { word++; ch += yyleng; last = 0; }
+\n { line++; ch++; last = 1; }
+[ \t\r\f\v]+ { ch += yyleng; last = 0; }
 %%
 int main(int argc, char *argv[]) {
     if (argc != 2) {
@@ -23,8 +23,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
     yylex();
-    if (chars > 0 && !last_newline) lines++;
-    printf("Characters: %d\nWords: %d\nLines: %d\n", chars, words, lines);
+    /* count last line */
+    if (ch > 0 && !last) line++;
+    printf("characters: %d\nwords: %d\nlines: %d\n", ch, word, line);
     fclose(yyin);
     return 0;
 }
